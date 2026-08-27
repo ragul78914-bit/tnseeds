@@ -1,0 +1,126 @@
+@import 'leaflet/dist/leaflet.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-size: 14px; /* Crisp, slightly smaller base font size for sleek modern SaaS look */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (min-width: 640px) {
+    html {
+      font-size: 14.5px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      font-size: 15px;
+    }
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased font-sans leading-relaxed tracking-tight selection:bg-emerald-200 selection:text-emerald-900;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-extrabold text-slate-900;
+  }
+}
+
+/* Glassmorphism & Adaptive Layout Utilities */
+.glass-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hero-pattern {
+  background-color: #0f2d1e;
+  background-image: radial-gradient(#22c55e 0.75px, transparent 0.75px), radial-gradient(#22c55e 0.75px, #0f2d1e 0.75px);
+  background-size: 28px 28px;
+  background-position: 0 0, 14px 14px;
+}
+
+/* Mobile & Tablet Specific Responsive Adaptations */
+@media (max-width: 639px) {
+  .responsive-padding {
+    @apply px-3 py-4;
+  }
+  
+  .responsive-card {
+    @apply p-4 rounded-2xl;
+  }
+
+  .responsive-title {
+    @apply text-xl leading-tight;
+  }
+
+  .responsive-subtitle {
+    @apply text-xs leading-normal;
+  }
+
+  .responsive-grid {
+    @apply grid-cols-1 gap-3;
+  }
+
+  .responsive-table {
+    @apply text-[11px];
+  }
+
+  .responsive-table th, .responsive-table td {
+    @apply py-2 px-2.5;
+  }
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .responsive-padding {
+    @apply px-6 py-6;
+  }
+
+  .responsive-card {
+    @apply p-6 rounded-3xl;
+  }
+
+  .responsive-title {
+    @apply text-2xl;
+  }
+
+  .responsive-grid {
+    @apply grid-cols-2 gap-4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive-padding {
+    @apply px-8 py-8;
+  }
+
+  .responsive-title {
+    @apply text-3xl;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
