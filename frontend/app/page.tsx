@@ -23,10 +23,8 @@ export default function HomePage() {
   return (
     <div className="space-y-10 sm:space-y-16 pb-16">
       
-      {/* Hero Section with Responsive Media Queries */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-900 via-emerald-800 to-slate-900 text-white pt-12 sm:pt-20 pb-16 sm:pb-28 px-3 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 opacity-10 hero-pattern" />
-        
+      {/* Hero Section with Farmer Planting Seeds Background Image */}
+      <section className="relative overflow-hidden hero-bg-farmer text-white pt-12 sm:pt-20 pb-16 sm:pb-28 px-3 sm:px-6 lg:px-8 border-b border-emerald-900/30">
         <div className="relative max-w-7xl mx-auto text-center space-y-6 sm:space-y-8">
           
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-md text-emerald-300 text-xs sm:text-sm font-semibold tracking-wide shadow-inner">
@@ -35,19 +33,19 @@ export default function HomePage() {
           </div>
 
           <div className="space-y-3 sm:space-y-4 max-w-4xl mx-auto">
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight sm:leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight sm:leading-tight text-white drop-shadow-md">
               {t('appTitle')}
             </h1>
-            <p className="text-lg sm:text-2xl font-medium text-emerald-200">
+            <p className="text-lg sm:text-2xl font-medium text-emerald-200 drop-shadow">
               {t('subtitle')}
             </p>
-            <p className="text-xs sm:text-base text-slate-300 max-w-2xl mx-auto">
+            <p className="text-xs sm:text-base text-slate-200 max-w-2xl mx-auto">
               {t('heroTitle')} Check current stock before travelling to seed centers.
             </p>
           </div>
 
           {/* Responsive Search Card */}
-          <div className="max-w-4xl mx-auto bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl text-slate-900 border border-emerald-100">
+          <div className="max-w-4xl mx-auto bg-white/95 backdrop-blur-md rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-2xl text-slate-900 border border-white/60">
             <form onSubmit={handleSearch} className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 sm:gap-3 items-center">
               
               {/* Seed Name Input */}
@@ -302,7 +300,7 @@ export default function HomePage() {
           {/* Admin Control Card */}
           <div className="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl transition space-y-3 sm:space-y-4">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
-              <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
+              <Building2 className="w-6 h-6" />
             </div>
             <h3 className="text-lg sm:text-xl font-bold text-slate-900">Admin Control Portal</h3>
             <p className="text-xs sm:text-sm text-slate-600">

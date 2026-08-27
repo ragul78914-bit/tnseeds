@@ -22,12 +22,7 @@
   }
 
   body {
-    background-image: linear-gradient(to bottom, rgba(248, 250, 252, 0.90), rgba(248, 250, 252, 0.94)), url('/bg-farmer.jpg');
-    background-attachment: fixed;
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-    @apply text-slate-800 antialiased font-sans leading-relaxed tracking-tight selection:bg-emerald-200 selection:text-emerald-900 min-h-screen;
+    @apply bg-slate-50 text-slate-800 antialiased font-sans leading-relaxed tracking-tight selection:bg-emerald-200 selection:text-emerald-900 min-h-screen;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -48,11 +43,11 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.hero-pattern {
-  background-color: #0f2d1e;
-  background-image: radial-gradient(#22c55e 0.75px, transparent 0.75px), radial-gradient(#22c55e 0.75px, #0f2d1e 0.75px);
-  background-size: 28px 28px;
-  background-position: 0 0, 14px 14px;
+.hero-bg-farmer {
+  background-image: linear-gradient(to bottom, rgba(4, 57, 39, 0.78), rgba(15, 23, 42, 0.88)), url('/bg-farmer.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 /* Mobile & Tablet Specific Responsive Adaptations */
