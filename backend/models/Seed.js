@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const SeedSchema = new mongoose.Schema({
+  _id: { type: String },
   seedCode: { type: String, required: true, unique: true },
   seedName: { type: String, required: true },
   crop: { type: String, required: true },
@@ -23,7 +24,7 @@ const SeedSchema = new mongoose.Schema({
   recommendedRegion: { type: String, default: 'Tamil Nadu & South India' },
   imageUrl: { type: String, default: '' },
   status: { type: String, enum: ['ACTIVE', 'INACTIVE'], default: 'ACTIVE' },
-  sellerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true },
+  sellerId: { type: String, ref: 'Seller', required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

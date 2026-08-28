@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const CropSchema = new mongoose.Schema({
+  _id: { type: String },
   name: { type: String, required: true, unique: true },
   code: { type: String, required: true, unique: true },
   description: { type: String, default: '' },

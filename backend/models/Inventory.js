@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const InventorySchema = new mongoose.Schema({
-  seedId: { type: mongoose.Schema.Types.ObjectId, ref: 'Seed', required: true },
-  sellerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true },
+  _id: { type: String },
+  seedId: { type: String, ref: 'Seed', required: true },
+  sellerId: { type: String, ref: 'Seller', required: true },
   openingStock: { type: Number, default: 0 },
   purchased: { type: Number, default: 0 },
   sold: { type: Number, default: 0 },

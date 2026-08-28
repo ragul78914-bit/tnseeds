@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const StockTransactionSchema = new mongoose.Schema({
+  _id: { type: String },
   transactionNo: { type: String, required: true, unique: true },
   date: { type: Date, default: Date.now },
-  seedId: { type: mongoose.Schema.Types.ObjectId, ref: 'Seed', required: true },
-  sellerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true },
+  seedId: { type: String, ref: 'Seed', required: true },
+  sellerId: { type: String, ref: 'Seller', required: true },
   type: { 
     type: String, 
     enum: ['PURCHASE', 'SALE', 'RETURN', 'DAMAGE', 'SHORTAGE', 'MANUAL_ADJUSTMENT', 'TRANSFER'],
@@ -20,7 +21,7 @@ const StockTransactionSchema = new mongoose.Schema({
   invoiceNo: { type: String, default: '' },
   supplier: { type: String, default: '' },
   notes: { type: String, default: '' },
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  createdBy: { type: String, ref: 'User' },
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
 const FarmerSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  _id: { type: String },
+  userId: { type: String, ref: 'User', required: true },
   name: { type: String, required: true },
   phone: { type: String, required: true },
   district: { type: String, default: 'Coimbatore' },
@@ -15,7 +16,7 @@ const FarmerSchema = new mongoose.Schema({
     location: String, 
     date: { type: Date, default: Date.now } 
   }],
-  favoriteSeeds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Seed' }],
+  favoriteSeeds: [{ type: String, ref: 'Seed' }],
   createdAt: { type: Date, default: Date.now }
 });
 
