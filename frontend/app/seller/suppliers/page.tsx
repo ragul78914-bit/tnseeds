@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchApi } from '../../../lib/api';
 import { Truck, Plus, Save } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 export default function SellerSuppliersPage() {
   const [suppliers, setSuppliers] = useState<any[]>([]);
@@ -51,12 +52,14 @@ export default function SellerSuppliersPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-          🚚 Seed Suppliers Directory
-        </h1>
-        <p className="text-xs text-slate-500">Manage seed producers, companies, and distribution suppliers</p>
-      </div>
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="Vendor & Supply Management"
+        badgeIcon={<Truck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title="🚚 Seed Suppliers & Vendors Directory"
+        subtitle="Manage certified seed producers, state seed corporations, and regional distributors"
+        breadcrumbs={[{ label: 'Seller Center', href: '/seller/dashboard' }, { label: 'Suppliers' }]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         

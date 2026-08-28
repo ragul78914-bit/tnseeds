@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fetchApi } from '../../../lib/api';
 import { Layers, Plus, RefreshCw, CheckCircle2, AlertTriangle, XCircle, ArrowUpRight } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 export default function SellerInventoryPage() {
   const [inventory, setInventory] = useState<any[]>([]);
@@ -29,23 +30,21 @@ export default function SellerInventoryPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            📊 Central Inventory Ledger Table
-          </h1>
-          <p className="text-xs text-slate-500">
-            Current Stock = Opening + Purchases + Adjustments In - Sales - Damaged - Shortage - Adjustments Out
-          </p>
-        </div>
-
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="Stock Balance Engine"
+        badgeIcon={<Layers className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title="📊 Central Inventory Ledger Table"
+        subtitle="Current Stock = Opening + Purchases + Adjustments In - Sales - Damaged - Shortage - Adjustments Out"
+        breadcrumbs={[{ label: 'Seller Center', href: '/seller/dashboard' }, { label: 'Inventory Balances' }]}
+      >
         <Link
           href="/seller/stock"
-          className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5"
+          className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-950/40 transition flex items-center gap-1.5 border border-emerald-400/30"
         >
           <Plus className="w-4 h-4" /> Record Stock Transaction
         </Link>
-      </div>
+      </PageHeader>
 
       {/* Sub Header */}
       <div className="flex items-center gap-2 text-xs font-bold text-slate-600 border-b border-slate-200 pb-2">

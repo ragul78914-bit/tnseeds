@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fetchApi } from '../../../lib/api';
-import { Store, Power, MapPin, CheckCircle2, XCircle } from 'lucide-react';
+import { Store, Power, MapPin, CheckCircle2, XCircle, ShieldCheck } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 export default function AdminSellersPage() {
   const [sellers, setSellers] = useState<any[]>([]);
@@ -35,16 +36,14 @@ export default function AdminSellersPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            🏪 Seller Centers & Distribution Outlets Management
-          </h1>
-          <p className="text-xs text-slate-500">
-            Activate or Deactivate sellers. Deactivating a seller immediately hides their seed inventory from farmer search queries.
-          </p>
-        </div>
-      </div>
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="Dealer Network Control"
+        badgeIcon={<ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title="🏪 Seed Sellers & Outlets Directory"
+        subtitle="Authorize, activate or suspend seller licenses across Tamil Nadu. Deactivated sellers are immediately unlisted from live availability search."
+        breadcrumbs={[{ label: 'Administration', href: '/admin/dashboard' }, { label: 'Manage Sellers' }]}
+      />
 
       <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">

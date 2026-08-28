@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchApi } from '../../lib/api';
 import { useLanguage } from '../../context/LanguageContext';
-import { Award, FileText, CheckCircle2, ExternalLink, Building2, Calendar } from 'lucide-react';
+import { Award, FileText, CheckCircle2, ExternalLink, Building2, Calendar, Sparkles } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
 export default function GovernmentSchemesPage() {
   const { t } = useLanguage();
@@ -22,18 +23,18 @@ export default function GovernmentSchemesPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
-      {/* Banner */}
-      <div className="bg-gradient-to-r from-amber-900 via-amber-800 to-slate-900 text-white p-8 rounded-3xl shadow-xl space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-500/30 uppercase">
-          Government Subsidies & Benefits
-        </div>
-        <h1 className="text-3xl font-extrabold flex items-center gap-2">
-          🏆 {t('governmentSchemes')}
-        </h1>
-        <p className="text-sm text-amber-200 max-w-2xl">
-          Explore seed subsidy schemes, mini-kit distribution programs, and government agricultural financial assistance available in Tamil Nadu.
-        </p>
-      </div>
+      {/* Banner with Uploaded Image Background */}
+      <PageHeader
+        badge="Government Subsidies & Benefits"
+        badgeIcon={<Award className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+        title={
+          <>
+            🏆 {t('governmentSchemes')}
+          </>
+        }
+        subtitle="Explore seed subsidy schemes, certified hybrid mini-kit distribution programs, and state agricultural financial assistance available in Tamil Nadu."
+        breadcrumbs={[{ label: 'Government Subsidies' }]}
+      />
 
       {/* Schemes List Grid */}
       {loading ? (

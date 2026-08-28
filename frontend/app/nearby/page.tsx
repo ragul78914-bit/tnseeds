@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { fetchApi } from '../../lib/api';
 import { useLanguage } from '../../context/LanguageContext';
 import MapView from '../../components/MapView';
-import { MapPin, Phone, Store, ExternalLink, CheckCircle2, AlertTriangle, XCircle, Search } from 'lucide-react';
+import { MapPin, Phone, Store, ExternalLink, CheckCircle2, AlertTriangle, XCircle, Search, Compass } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
 export default function NearbyCentersPage() {
   const { t } = useLanguage();
@@ -35,27 +36,24 @@ export default function NearbyCentersPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
-      {/* Page Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-8 rounded-3xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div className="space-y-2">
-          <span className="bg-emerald-500/20 text-emerald-300 text-xs font-bold px-3 py-1 rounded-full uppercase border border-emerald-500/30">
-            Interactive GIS Map
-          </span>
-          <h1 className="text-3xl font-extrabold flex items-center gap-2">
+      {/* Page Header Banner with Uploaded Image Background */}
+      <PageHeader
+        badge="Interactive GIS Distribution Network"
+        badgeIcon={<Compass className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title={
+          <>
             📍 {t('nearbySellers')}
-          </h1>
-          <p className="text-sm text-emerald-200">
-            Locate authorized seed distribution centers and inspect available hybrid inventory in real-time
-          </p>
-        </div>
-
-        {/* Distance Selector */}
-        <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md p-2 rounded-2xl border border-white/20">
-          <span className="text-xs font-semibold text-white px-2">Radius:</span>
+          </>
+        }
+        subtitle="Locate authorized seed distribution centers and inspect available hybrid inventory in real-time"
+        breadcrumbs={[{ label: 'Nearby Distribution Centers' }]}
+      >
+        <div className="flex items-center gap-2 bg-slate-900/80 backdrop-blur-md p-2 rounded-2xl border border-emerald-500/30 shadow-lg">
+          <span className="text-xs font-semibold text-emerald-200 px-2">Radius:</span>
           <select
             value={maxDistance}
             onChange={(e) => setMaxDistance(e.target.value)}
-            className="bg-slate-800 text-white text-xs font-bold px-3 py-2 rounded-xl focus:outline-none"
+            className="bg-slate-800 text-white text-xs font-bold px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-slate-700"
           >
             <option value="10">Within 10 km</option>
             <option value="25">Within 25 km</option>
@@ -63,7 +61,7 @@ export default function NearbyCentersPage() {
             <option value="100">Within 100 km</option>
           </select>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Main Map & Centers List Split */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

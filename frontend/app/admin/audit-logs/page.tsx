@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { fetchApi } from '../../../lib/api';
-import { Activity, ShieldCheck } from 'lucide-react';
+import { Activity, ShieldCheck, FileCheck } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 export default function AdminAuditLogsPage() {
   const [logs, setLogs] = useState<any[]>([]);
@@ -20,14 +21,14 @@ export default function AdminAuditLogsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-          📜 System Activity Audit Log Ledger
-        </h1>
-        <p className="text-xs text-slate-500">
-          Permanent audit records capturing stock updates, user logins, seller status toggles, and system alerts
-        </p>
-      </div>
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="Immutable Audit Trail"
+        badgeIcon={<FileCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title="📜 System Activity & Audit Log Ledger"
+        subtitle="Permanent audit records capturing seed stock entries, user sign-ins, seller authorization toggles, and system security events"
+        breadcrumbs={[{ label: 'Administration', href: '/admin/dashboard' }, { label: 'Audit Logs' }]}
+      />
 
       <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">

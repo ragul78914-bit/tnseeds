@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { fetchApi } from '../../lib/api';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
-import { Search, MapPin, Heart, CheckCircle2, AlertTriangle, XCircle, Clock, ExternalLink, RefreshCw, Lock } from 'lucide-react';
+import { Search, MapPin, Heart, CheckCircle2, AlertTriangle, XCircle, Clock, ExternalLink, RefreshCw, Lock, Sparkles } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
-export default function SeedsSearchPage() {
+function SeedsSearchPageContent() {
   const searchParams = useSearchParams();
   const { user } = useAuth();
   const { t } = useLanguage();
@@ -83,24 +84,25 @@ export default function SeedsSearchPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-emerald-900 to-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-xl">
-        <div className="space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
+      {/* Header Banner with Uploaded Image Background */}
+      <PageHeader
+        badge="Verified Hybrid Network"
+        badgeIcon={<Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title={
+          <>
             🌾 Seed Availability Directory
-          </h1>
-          <p className="text-sm text-emerald-200">
-            Real-time stock quantities and location-based seller distance across Tamil Nadu
-          </p>
-        </div>
-
+          </>
+        }
+        subtitle="Real-time stock quantities and location-based seller distance across all Tamil Nadu districts"
+        breadcrumbs={[{ label: 'Seed Catalog' }]}
+      >
         <button
           onClick={loadSeeds}
-          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-2"
+          className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-950/40 border border-emerald-400/30"
         >
           <RefreshCw className="w-3.5 h-3.5" /> Refresh Stock Status
         </button>
-      </div>
+      </PageHeader>
 
       {!user && (
         <div className="bg-amber-500/10 border border-amber-500/30 text-amber-900 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-bold">
@@ -375,5 +377,13 @@ export default function SeedsSearchPage() {
       )}
 
     </div>
+  );
+}
+
+export default function SeedsSearchPage() {
+  return (
+    <Suspense fallback={<div className="max-w-7xl mx-auto px-4 py-16 text-center text-slate-500 font-semibold">Loading seeds catalog...</div>}>
+      <SeedsSearchPageContent />
+    </Suspense>
   );
 }

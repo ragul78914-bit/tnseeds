@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { fetchApi } from '../../../lib/api';
-import { Plus, Save, History, AlertCircle, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Plus, Save, History, AlertCircle, ArrowLeft, RefreshCw, Layers } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 export default function StockEntryPage() {
   const router = useRouter();
@@ -81,16 +82,14 @@ export default function StockEntryPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
-      <div className="flex justify-between items-center bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            📝 Stock Entry & Inventory Transaction Audit
-          </h1>
-          <p className="text-xs text-slate-500">
-            Record purchases, sales, damage, shortage, and manual adjustments with permanent transaction log
-          </p>
-        </div>
-      </div>
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="Live Inventory Transactions"
+        badgeIcon={<Layers className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title="📝 Stock Entry & Inventory Ledger Audit"
+        subtitle="Record purchases, sales, damage, shortage, and manual adjustments with permanent transaction audit logs"
+        breadcrumbs={[{ label: 'Seller Center', href: '/seller/dashboard' }, { label: 'Stock Transactions' }]}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         

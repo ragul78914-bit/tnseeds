@@ -4,7 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { fetchApi } from '../../../lib/api';
 import { useAuth } from '../../../context/AuthContext';
 import MapView from '../../../components/MapView';
-import { Store, MapPin, Save, CheckCircle2 } from 'lucide-react';
+import { Store, MapPin, Save, CheckCircle2, Settings } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 export default function SellerSettingsPage() {
   const { user } = useAuth();
@@ -84,14 +85,14 @@ export default function SellerSettingsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-          ⚙️ Seller Store Profile & Map Location
-        </h1>
-        <p className="text-xs text-slate-500">
-          Update business coordinates so nearby farmers can find your store location and get turn-by-turn directions
-        </p>
-      </div>
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="Storefront & GPS Coordinates"
+        badgeIcon={<Settings className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title="⚙️ Seller Store Profile & GIS Coordinates"
+        subtitle="Manage public distribution center details, license information, and map pin location for farmer searches"
+        breadcrumbs={[{ label: 'Seller Center', href: '/seller/dashboard' }, { label: 'Store Settings' }]}
+      />
 
       {success && (
         <div className="p-4 bg-emerald-50 text-emerald-800 text-xs font-bold rounded-2xl border border-emerald-200 flex items-center gap-2">

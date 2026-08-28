@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fetchApi } from '../../lib/api';
-import { Heart, Trash2, ArrowRight } from 'lucide-react';
+import { Heart, Trash2, ArrowRight, Sparkles } from 'lucide-react';
+import PageHeader from '../../components/PageHeader';
 
 export default function FavoritesPage() {
   const [seeds, setSeeds] = useState<any[]>([]);
@@ -35,16 +36,14 @@ export default function FavoritesPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
-      <div className="flex justify-between items-center bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div className="space-y-1">
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            ❤️ Saved Favorite Seeds
-          </h1>
-          <p className="text-xs text-slate-500">
-            Quickly check stock availability for your bookmarked hybrid seeds
-          </p>
-        </div>
-      </div>
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="Farmer Bookmarks"
+        badgeIcon={<Heart className="w-3.5 h-3.5 text-rose-400 fill-rose-400 shrink-0" />}
+        title="❤️ Saved Favorite Seeds"
+        subtitle="Quickly monitor real-time stock levels, seller distance, and price changes for your saved hybrid seeds"
+        breadcrumbs={[{ label: 'Saved Favorites' }]}
+      />
 
       {loading ? (
         <div className="p-8 text-center text-slate-400">Loading saved seeds...</div>

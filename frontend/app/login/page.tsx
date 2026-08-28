@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { fetchApi } from '../../lib/api';
@@ -8,7 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import Logo from '../../components/Logo';
 import { Lock, Mail, Store, ShieldAlert, User, ArrowRight } from 'lucide-react';
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login, user } = useAuth();
@@ -169,5 +169,13 @@ export default function LoginPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="max-w-md mx-auto my-16 p-8 text-center text-slate-500 font-semibold">Loading portal login...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }

@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { fetchApi } from '../../../../lib/api';
-import { ArrowLeft, Package, Save } from 'lucide-react';
+import { ArrowLeft, Package, Save, Plus, Sparkles } from 'lucide-react';
+import PageHeader from '../../../../components/PageHeader';
 
 export default function AddSeedPage() {
   const router = useRouter();
@@ -56,16 +57,21 @@ export default function AddSeedPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      <div className="flex justify-between items-center bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div>
-          <Link href="/seller/seeds" className="text-xs font-bold text-slate-500 hover:text-emerald-700 flex items-center gap-1 mb-1">
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Seeds Catalog
-          </Link>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            🌱 Add New Hybrid Seed Product
-          </h1>
-        </div>
-      </div>
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="SKU Registry"
+        badgeIcon={<Package className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title="🌱 Register New Hybrid Seed SKU"
+        subtitle="Add seed specifications, pricing, pack units, and initial stock balance"
+        breadcrumbs={[{ label: 'Seller Center', href: '/seller/dashboard' }, { label: 'Seeds', href: '/seller/seeds' }, { label: 'Add SKU' }]}
+      >
+        <Link
+          href="/seller/seeds"
+          className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition flex items-center gap-1.5 border border-white/20 backdrop-blur-md"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" /> Back to Catalog
+        </Link>
+      </PageHeader>
 
       {error && (
         <div className="p-4 bg-rose-50 text-rose-700 text-xs font-bold rounded-2xl border border-rose-200">

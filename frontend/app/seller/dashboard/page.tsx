@@ -8,7 +8,8 @@ import { useAuth } from '../../../context/AuthContext';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line 
 } from 'recharts';
-import { Package, TrendingUp, AlertTriangle, XCircle, DollarSign, Store, ShoppingCart, ArrowUpRight, Plus, Download, RefreshCw, FileText } from 'lucide-react';
+import { Package, TrendingUp, AlertTriangle, XCircle, DollarSign, Store, ShoppingCart, ArrowUpRight, Plus, Download, RefreshCw, FileText, Sparkles } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 const COLORS = ['#16a34a', '#0284c7', '#f59e0b', '#dc2626', '#8b5cf6', '#ec4899'];
 
@@ -50,38 +51,33 @@ export default function SellerDashboardPage() {
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
       
-      {/* Seller Header Bar */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 text-white p-5 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 text-[10px] sm:text-xs font-bold rounded-full border border-emerald-500/30 uppercase">
-              SaaS Stock ERP
-            </span>
-            <span className="text-[10px] sm:text-xs text-slate-400">Seller Code: {user?.seller?._id || 'SEL-001'}</span>
-          </div>
-          <h1 className="text-xl sm:text-3xl font-extrabold flex items-center gap-2">
+      {/* Seller Header Bar with Uploaded Image Background */}
+      <PageHeader
+        badge="SaaS Stock ERP Command Center"
+        badgeIcon={<Store className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title={
+          <>
             🏪 {user?.seller?.businessName || 'Agri Seed Center'} Dashboard
-          </h1>
-          <p className="text-[11px] sm:text-xs text-slate-400">
-            Real-time digital inventory, stock transaction ledger, and farmer search visibility
-          </p>
-        </div>
-
+          </>
+        }
+        subtitle="Real-time digital inventory, stock transaction ledger, and farmer search visibility across Tamil Nadu"
+        breadcrumbs={[{ label: 'Seller Center' }, { label: 'ERP Dashboard' }]}
+      >
         <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <Link
             href="/seller/stock"
-            className="flex-1 sm:flex-initial px-3.5 py-2 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition flex items-center justify-center gap-1.5"
+            className="flex-1 sm:flex-initial px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-950/40 transition flex items-center justify-center gap-1.5 border border-emerald-400/30"
           >
             <Plus className="w-3.5 h-3.5" /> Stock Entry
           </Link>
           <Link
             href="/seller/seeds"
-            className="flex-1 sm:flex-initial px-3.5 py-2 sm:py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 border border-slate-700"
+            className="flex-1 sm:flex-initial px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl transition flex items-center justify-center gap-1.5 border border-white/20 backdrop-blur-md"
           >
-            <Package className="w-3.5 h-3.5" /> Seeds List
+            <Package className="w-3.5 h-3.5" /> Manage Seeds
           </Link>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Navigation Sub-Header */}
       <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-200 text-xs font-bold text-slate-600 shrink-0">

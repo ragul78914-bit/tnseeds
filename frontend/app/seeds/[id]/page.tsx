@@ -7,7 +7,8 @@ import { fetchApi } from '../../../lib/api';
 import { useAuth } from '../../../context/AuthContext';
 import { useLanguage } from '../../../context/LanguageContext';
 import MapView from '../../../components/MapView';
-import { MapPin, Phone, Heart, CheckCircle2, AlertTriangle, XCircle, ArrowLeft, ShieldCheck, Clock, ExternalLink, Calendar, Store, Tag, Lock } from 'lucide-react';
+import { MapPin, Phone, Heart, CheckCircle2, AlertTriangle, XCircle, ArrowLeft, ShieldCheck, Clock, ExternalLink, Calendar, Store, Tag, Lock, Sparkles } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 export default function SeedDetailsPage() {
   const { id } = useParams();
@@ -81,12 +82,36 @@ export default function SeedDetailsPage() {
   }] : [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
-      {/* Back Button */}
-      <Link href="/seeds" className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-emerald-700 transition">
-        <ArrowLeft className="w-4 h-4" /> Back to Seeds Directory
-      </Link>
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge={seed.crop ? `${seed.crop} Hybrid Variety` : 'Certified Hybrid Seed'}
+        badgeIcon={<Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title={seed.seedName}
+        subtitle={`Variety: ${seed.variety || 'Certified Hybrid'} • Brand: ${seed.brand || 'TN Seeds'} • SKU: ${seed.seedCode || 'SEED-AUTO'}`}
+        breadcrumbs={[{ label: 'Seed Directory', href: '/seeds' }, { label: seed.seedName }]}
+      >
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleSave}
+            className={`px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition shadow-lg ${
+              isSaved
+                ? 'bg-rose-600 text-white shadow-rose-950/40 border border-rose-400/30'
+                : 'bg-white/15 hover:bg-white/25 text-white border border-white/20 backdrop-blur-md'
+            }`}
+          >
+            <Heart className={`w-3.5 h-3.5 ${isSaved ? 'fill-white' : ''}`} />
+            {isSaved ? 'Bookmarked' : 'Save Favorite'}
+          </button>
+          <Link
+            href="/seeds"
+            className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl transition flex items-center gap-1.5 border border-white/20 backdrop-blur-md"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> All Seeds
+          </Link>
+        </div>
+      </PageHeader>
 
       {!user && (
         <div className="bg-amber-500/10 border border-amber-500/30 text-amber-900 p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-bold">

@@ -24,7 +24,7 @@ export default function HomePage() {
     <div className="space-y-10 sm:space-y-16 pb-16">
       
       {/* Hero Section with Farmer Planting Seeds Background Image */}
-      <section className="relative overflow-hidden hero-bg-farmer text-white pt-12 sm:pt-20 pb-16 sm:pb-28 px-3 sm:px-6 lg:px-8 border-b border-emerald-900/30">
+      <section className="relative overflow-hidden hero-bg-farmer text-white py-14 sm:py-24 px-3 sm:px-6 lg:px-8 border-b border-emerald-500/20 shadow-2xl">
         <div className="relative max-w-7xl mx-auto text-center space-y-6 sm:space-y-8">
           
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-emerald-500/20 border border-emerald-400/30 backdrop-blur-md text-emerald-300 text-xs sm:text-sm font-semibold tracking-wide shadow-inner">

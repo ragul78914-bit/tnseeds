@@ -6,6 +6,7 @@ import { fetchApi } from '../../../lib/api';
 import { useAuth } from '../../../context/AuthContext';
 import { ShieldAlert, Users, Store, Package, Layers, Activity, Award, CheckCircle2, XCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import PageHeader from '../../../components/PageHeader';
 
 export default function AdminDashboardPage() {
   const { user } = useAuth();
@@ -35,35 +36,29 @@ export default function AdminDashboardPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       
-      {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900 text-white p-8 rounded-3xl shadow-xl">
-        <div className="space-y-1">
-          <span className="px-3 py-1 bg-amber-500/20 text-amber-400 text-xs font-bold rounded-full border border-amber-500/30 uppercase">
-            System Administration
-          </span>
-          <h1 className="text-3xl font-extrabold flex items-center gap-2">
-            🛡️ Admin Control Center
-          </h1>
-          <p className="text-xs text-slate-400">
-            Monitor registered farmers, active seller centers, seed stock availability across Tamil Nadu, and system audit logs
-          </p>
-        </div>
-
+      {/* Header Banner with Uploaded Image Background */}
+      <PageHeader
+        badge="State Agriculture Control Center"
+        badgeIcon={<ShieldAlert className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+        title="🛡️ Admin System Administration"
+        subtitle="Monitor registered farmers, active seed sellers, certified stocks across Tamil Nadu, and system audit logs"
+        breadcrumbs={[{ label: 'Administration' }, { label: 'Command Center' }]}
+      >
         <div className="flex items-center gap-3">
           <Link
             href="/admin/sellers"
-            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow-md"
+            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition shadow-lg shadow-emerald-950/40 border border-emerald-400/30"
           >
             Manage Sellers
           </Link>
           <Link
             href="/admin/audit-logs"
-            className="px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold rounded-xl border border-slate-700 transition"
+            className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 backdrop-blur-md transition"
           >
             View Audit Logs
           </Link>
         </div>
-      </div>
+      </PageHeader>
 
       {/* Sub Nav */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 text-xs font-bold text-slate-600">

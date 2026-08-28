@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fetchApi } from '../../../lib/api';
-import { Package, Plus, Search, Edit, Power, CheckCircle2, XCircle } from 'lucide-react';
+import { Package, Plus, Search, Edit, Power, CheckCircle2, XCircle, Sparkles } from 'lucide-react';
+import PageHeader from '../../../components/PageHeader';
 
 export default function SellerSeedsPage() {
   const [seeds, setSeeds] = useState<any[]>([]);
@@ -45,23 +46,21 @@ export default function SellerSeedsPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-2">
-            📦 Seed Products Catalog
-          </h1>
-          <p className="text-xs text-slate-500">
-            Create, modify, and manage hybrid seeds with auto-generated product codes (SEED-XXXXXX)
-          </p>
-        </div>
-
+      {/* Header with Uploaded Image Background */}
+      <PageHeader
+        badge="SKU & Product Master"
+        badgeIcon={<Package className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
+        title="📦 Seed Products Catalog"
+        subtitle="Create, modify, and manage hybrid seeds with auto-generated product codes (SEED-XXXXXX)"
+        breadcrumbs={[{ label: 'Seller Center', href: '/seller/dashboard' }, { label: 'Seeds Catalog' }]}
+      >
         <Link
           href="/seller/seeds/add"
-          className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center gap-1.5"
+          className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-950/40 transition flex items-center gap-1.5 border border-emerald-400/30"
         >
-          <Plus className="w-4 h-4" /> Add New Seed Product
+          <Plus className="w-4 h-4" /> Add New Seed SKU
         </Link>
-      </div>
+      </PageHeader>
 
       {/* Sub Header */}
       <div className="flex items-center gap-2 text-xs font-bold text-slate-600 border-b border-slate-200 pb-2">
