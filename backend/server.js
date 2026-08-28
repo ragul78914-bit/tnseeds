@@ -21,10 +21,23 @@ const io = new Server(server, {
 // Pass socket.io instance to express app
 app.set('socketio', io);
 
-// Middleware
-app.use(cors());
+// CORS: Allow all origins listed in CLIENT_URL (comma-separated)
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:3000')
+  .split(',')
+  .map(o => o.trim());
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. curl, Postman, server-to-server)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error(`CORS: Origin ${origin} not allowed`));
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
 
 // Socket.IO Connection Handler
 io.on('connection', (socket) => {

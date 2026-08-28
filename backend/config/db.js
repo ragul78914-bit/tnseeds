@@ -21,7 +21,7 @@ const inMemoryData = {
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/smart_seed_db', {
-      serverSelectionTimeoutMS: 2000
+      serverSelectionTimeoutMS: 10000  // 10s — needed for Atlas cloud connections
     });
     console.log(`[Database] MongoDB Connected: ${conn.connection.host}`);
     return conn;
