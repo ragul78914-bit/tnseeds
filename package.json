@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Smart Seed Availability & Stock Management System (NIXTION / TN Seeds)",
   "scripts": {
+    "build": "npm run build --prefix frontend",
     "dev": "concurrently \"npm run start --prefix backend\" \"npm run dev --prefix frontend\"",
     "start": "concurrently \"npm run start --prefix backend\" \"npm run dev --prefix frontend\"",
     "backend": "npm run start --prefix backend",
