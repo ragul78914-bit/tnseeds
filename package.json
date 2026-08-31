@@ -1,16 +1,36 @@
 {
   "name": "smart-seed-management-system",
   "version": "1.0.0",
-  "description": "Smart Seed Availability & Stock Management System (NIXTION / TN Seeds)",
+  "private": true,
   "scripts": {
-    "build": "npm run build --prefix frontend",
+    "build": "cd frontend && npm install && npm run build",
     "dev": "concurrently \"npm run start --prefix backend\" \"npm run dev --prefix frontend\"",
     "start": "concurrently \"npm run start --prefix backend\" \"npm run dev --prefix frontend\"",
     "backend": "npm run start --prefix backend",
     "frontend": "npm run dev --prefix frontend",
     "seed": "npm run seed --prefix backend"
   },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.2.10",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.395.0",
+    "next": "14.2.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "recharts": "^2.12.7",
+    "socket.io-client": "^4.7.5",
+    "tailwind-merge": "^2.3.0"
+  },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "@types/leaflet": "^1.9.12",
+    "@types/node": "^20.14.8",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.5.2"
   }
 }
