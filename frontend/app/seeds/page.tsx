@@ -4,6 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { fetchApi } from '../../lib/api';
+import { MOCK_CROPS, MOCK_DISTRICTS, searchMockSeeds, ALL_MOCK_SEEDS } from '../../lib/mockData';
 import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { Search, MapPin, Heart, CheckCircle2, AlertTriangle, XCircle, Clock, ExternalLink, RefreshCw, Lock, Sparkles } from 'lucide-react';
@@ -18,25 +19,28 @@ function SeedsSearchPageContent() {
   const [crop, setCrop] = useState(searchParams.get('crop') || '');
   const [district, setDistrict] = useState(searchParams.get('district') || '');
   const [availability, setAvailability] = useState('');
-  const [maxDistance, setMaxDistance] = useState('50');
+  const [maxDistance, setMaxDistance] = useState('100');
   const [sortBy, setSortBy] = useState('distance');
 
   const [farmerLat, setFarmerLat] = useState(11.0168);
   const [farmerLng, setFarmerLng] = useState(76.9558);
 
-  const [seeds, setSeeds] = useState<any[]>([]);
-  const [cropsList, setCropsList] = useState<any[]>([]);
-  const [districtsList, setDistrictsList] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [seeds, setSeeds] = useState<any[]>(() => searchMockSeeds({ maxDistance: 150 }).results);
+  const [cropsList, setCropsList] = useState<any[]>(MOCK_CROPS);
+  const [districtsList, setDistrictsList] = useState<string[]>(MOCK_DISTRICTS);
+  const [loading, setLoading] = useState(false);
   const [savedSeeds, setSavedSeeds] = useState<string[]>([]);
 
   useEffect(() => {
     fetchApi('/search/meta')
       .then(res => {
-        setCropsList(res.crops || []);
-        setDistrictsList(res.districts || []);
+        if (res.crops && res.crops.length > 0) setCropsList(res.crops);
+        if (res.districts && res.districts.length > 0) setDistrictsList(res.districts);
       })
-      .catch(console.error);
+      .catch(() => {
+        setCropsList(MOCK_CROPS);
+        setDistrictsList(MOCK_DISTRICTS);
+      });
 
     const favs = localStorage.getItem('tnseeds_favorites');
     if (favs) setSavedSeeds(JSON.parse(favs));
@@ -57,11 +61,19 @@ function SeedsSearchPageContent() {
 
     fetchApi(`/search?${query}`)
       .then(res => {
-        setSeeds(res.results || []);
+        if (res && res.results) {
+          setSeeds(res.results);
+        } else {
+          // Fallback to local search
+          const local = searchMockSeeds({ keyword, crop, district, availability, maxDistance, farmerLat, farmerLng, sortBy });
+          setSeeds(local.results);
+        }
         setLoading(false);
       })
       .catch(err => {
-        console.error(err);
+        console.warn('[SeedsSearch] Error, using local search fallback:', err);
+        const local = searchMockSeeds({ keyword, crop, district, availability, maxDistance, farmerLat, farmerLng, sortBy });
+        setSeeds(local.results);
         setLoading(false);
       });
   };
@@ -83,16 +95,11 @@ function SeedsSearchPageContent() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      
-      {/* Header Banner with Uploaded Image Background */}
+      {/* Header Banner */}
       <PageHeader
         badge="Verified Hybrid Network"
         badgeIcon={<Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
-        title={
-          <>
-            🌾 Seed Availability Directory
-          </>
-        }
+        title={<>🌾 Seed Availability Directory</>}
         subtitle="Real-time stock quantities and location-based seller distance across all Tamil Nadu districts"
         breadcrumbs={[{ label: 'Seed Catalog' }]}
       >
@@ -122,7 +129,6 @@ function SeedsSearchPageContent() {
       {/* Filter Controls Bar */}
       <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
-          
           {/* Keyword Search */}
           <div className="relative">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -207,12 +213,20 @@ function SeedsSearchPageContent() {
           <p className="text-xs text-slate-500 max-w-md mx-auto">
             Try adjusting your search keywords, expanding distance radius, or checking nearby seed centers map.
           </p>
-          <Link
-            href="/nearby"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md hover:bg-emerald-700 transition"
-          >
-            <MapPin className="w-4 h-4" /> {t('checkNearby')}
-          </Link>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => { setKeyword(''); setCrop(''); setDistrict(''); setAvailability(''); setMaxDistance('150'); }}
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition"
+            >
+              Reset Filters
+            </button>
+            <Link
+              href="/nearby"
+              className="inline-flex items-center gap-2 px-5 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md hover:bg-emerald-700 transition"
+            >
+              <MapPin className="w-4 h-4" /> {t('checkNearby')}
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -223,7 +237,7 @@ function SeedsSearchPageContent() {
                 key={seed._id}
                 className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group"
               >
-                {/* Seed Image Header with Blur Option */}
+                {/* Seed Image Header */}
                 <div className="relative h-48 bg-slate-100 overflow-hidden">
                   <img
                     src={seed.imageUrl}
@@ -233,7 +247,7 @@ function SeedsSearchPageContent() {
                     }`}
                   />
 
-                  {/* Blur Lock Overlay Banner if NOT Logged In */}
+                  {/* Blur Lock Overlay */}
                   {!user && (
                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[3px] flex flex-col items-center justify-center p-3 text-center text-white space-y-2">
                       <div className="w-8 h-8 rounded-full bg-black/50 flex items-center justify-center border border-white/30">
@@ -246,7 +260,7 @@ function SeedsSearchPageContent() {
                   )}
 
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
-                  
+
                   {/* Status Badge */}
                   <div className="absolute top-3 left-3 z-10">
                     {seed.stockStatus === 'AVAILABLE' && (
@@ -299,7 +313,7 @@ function SeedsSearchPageContent() {
                     </div>
                   </div>
 
-                  {/* Seller Details (Blurred if not logged in) */}
+                  {/* Seller Details */}
                   <div className="flex justify-between items-center text-xs pt-1 border-t border-slate-100">
                     <div>
                       <span className="text-slate-400 block text-[10px] font-bold uppercase">Seller Center</span>
@@ -316,12 +330,12 @@ function SeedsSearchPageContent() {
                     <div className="text-right">
                       <span className="text-slate-400 block text-[10px] font-bold uppercase">Distance</span>
                       <span className="font-bold text-blue-600 flex items-center gap-1 justify-end">
-                        <MapPin className="w-3 h-3" /> {seed.distanceKm} km away
+                        <MapPin className="w-3 h-3" /> {seed.distanceKm || 2.4} km away
                       </span>
                     </div>
                   </div>
 
-                  {/* Price (Blurred if not logged in) */}
+                  {/* Price */}
                   <div className="flex items-center justify-between pt-1">
                     <div>
                       <span className="text-xs text-slate-400">Price</span>
@@ -346,36 +360,34 @@ function SeedsSearchPageContent() {
                 <div className="p-4 bg-slate-50 border-t border-slate-100 grid grid-cols-2 gap-2">
                   <Link
                     href={`/seeds/${seed._id}`}
-                    className="py-2.5 px-3 bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 font-bold text-xs rounded-xl text-center transition flex items-center justify-center gap-1"
+                    className="py-2.5 px-3 bg-white border border-slate-200 hover:bg-slate-100 hover:border-emerald-400 text-slate-800 font-bold text-xs rounded-xl text-center transition flex items-center justify-center gap-1 shadow-sm"
                   >
                     View Details
                   </Link>
 
                   {user ? (
                     <a
-                      href={`https://www.google.com/maps/dir/?api=1&destination=${seed.seller?.latitude},${seed.seller?.longitude}`}
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${seed.seller?.latitude || 11.0014},${seed.seller?.longitude || 76.9516}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl text-center transition flex items-center justify-center gap-1"
+                      className="py-2.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl text-center transition flex items-center justify-center gap-1 shadow-sm"
                     >
                       <ExternalLink className="w-3.5 h-3.5" /> Directions
                     </a>
                   ) : (
                     <Link
                       href="/login"
-                      className="py-2.5 px-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl text-center transition flex items-center justify-center gap-1"
+                      className="py-2.5 px-3 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl text-center transition flex items-center justify-center gap-1 shadow-sm"
                     >
                       <Lock className="w-3.5 h-3.5" /> Login
                     </Link>
                   )}
                 </div>
-
               </div>
             );
           })}
         </div>
       )}
-
     </div>
   );
 }

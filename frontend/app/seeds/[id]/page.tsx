@@ -4,33 +4,70 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { fetchApi } from '../../../lib/api';
+import { getMockSeedById, ALL_MOCK_SEEDS, SeedProduct } from '../../../lib/mockData';
 import { useAuth } from '../../../context/AuthContext';
 import { useLanguage } from '../../../context/LanguageContext';
 import MapView from '../../../components/MapView';
-import { MapPin, Phone, Heart, CheckCircle2, AlertTriangle, XCircle, ArrowLeft, ShieldCheck, Clock, ExternalLink, Calendar, Store, Tag, Lock, Sparkles } from 'lucide-react';
+import {
+  MapPin,
+  Phone,
+  Heart,
+  CheckCircle2,
+  AlertTriangle,
+  XCircle,
+  ArrowLeft,
+  Clock,
+  ExternalLink,
+  Store,
+  Tag,
+  Lock,
+  Sparkles,
+  ShieldCheck,
+  Sprout,
+  Layers,
+  Calendar,
+  Check
+} from 'lucide-react';
 import PageHeader from '../../../components/PageHeader';
 
 export default function SeedDetailsPage() {
-  const { id } = useParams();
+  const params = useParams();
+  const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
+  const id = rawId ? decodeURIComponent(rawId) : '';
+
   const { user } = useAuth();
   const { t } = useLanguage();
 
-  const [seed, setSeed] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [seed, setSeed] = useState<any>(() => (id ? getMockSeedById(id) : null));
+  const [loading, setLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     if (!id) return;
+
+    // Load initial fallback immediately for instant perceived performance
+    const localSeed = getMockSeedById(id);
+    if (localSeed) {
+      setSeed(localSeed);
+    }
+
+    // Check favorites
+    const favs = JSON.parse(localStorage.getItem('tnseeds_favorites') || '[]');
+    if (localSeed && favs.includes(localSeed._id)) {
+      setIsSaved(true);
+    }
+
+    // Also attempt fresh fetch from API (Next.js serverless or backend)
     fetchApi(`/search/${id}`)
       .then(data => {
-        setSeed(data);
+        if (data && data.seedName) {
+          setSeed(data);
+          if (favs.includes(data._id)) setIsSaved(true);
+        }
         setLoading(false);
-
-        const favs = JSON.parse(localStorage.getItem('tnseeds_favorites') || '[]');
-        if (favs.includes(data._id)) setIsSaved(true);
       })
       .catch(err => {
-        console.error(err);
+        console.warn('[SeedDetails] API fetch failed, fallback mock seed active:', err);
         setLoading(false);
       });
   }, [id]);
@@ -49,7 +86,7 @@ export default function SeedDetailsPage() {
     localStorage.setItem('tnseeds_favorites', JSON.stringify(updated));
   };
 
-  if (loading) {
+  if (loading && !seed) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center space-y-4">
         <div className="w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -61,30 +98,44 @@ export default function SeedDetailsPage() {
   if (!seed) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center space-y-4">
+        <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+          🌾
+        </div>
         <h2 className="text-xl font-bold text-slate-800">Seed Not Found</h2>
-        <Link href="/seeds" className="text-emerald-600 font-bold hover:underline text-sm">
-          ← Back to Seeds Search
+        <p className="text-xs text-slate-500 max-w-sm mx-auto">
+          The requested seed SKU or product could not be located. Browse our verified seed catalog below.
+        </p>
+        <Link href="/seeds" className="inline-block px-5 py-2.5 bg-emerald-600 text-white font-bold rounded-xl text-xs hover:bg-emerald-700 transition">
+          ← Back to Seeds Catalog
         </Link>
       </div>
     );
   }
 
-  const sellerCenters = seed.seller ? [{
-    _id: seed.seller._id,
-    businessName: user ? seed.seller.businessName : 'Seller Center (Login to view)',
-    ownerName: user ? seed.seller.ownerName : 'Owner',
-    phone: user ? seed.seller.phone : '9876543210',
-    address: user ? seed.seller.address : 'Coimbatore, Tamil Nadu',
-    district: seed.seller.district,
-    latitude: seed.seller.latitude,
-    longitude: seed.seller.longitude,
-    distanceKm: seed.distanceKm
-  }] : [];
+  // Related seeds from same crop or seller
+  const relatedSeeds = ALL_MOCK_SEEDS.filter(
+    s => s._id !== seed._id && (s.crop === seed.crop || s.sellerId === seed.sellerId)
+  ).slice(0, 3);
+
+  const sellerCenters = seed.seller
+    ? [
+        {
+          _id: seed.seller._id || 's_1',
+          businessName: user ? seed.seller.businessName : 'Authorized Seed Center (Login to view)',
+          ownerName: user ? seed.seller.ownerName : 'Authorized Center Head',
+          phone: user ? seed.seller.phone : '9842212345',
+          address: user ? seed.seller.address : `${seed.seller.district || 'Coimbatore'}, Tamil Nadu`,
+          district: seed.seller.district || 'Coimbatore',
+          latitude: seed.seller.latitude || 11.0014,
+          longitude: seed.seller.longitude || 76.9516,
+          distanceKm: seed.distanceKm || 2.4
+        }
+      ]
+    : [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      
-      {/* Header with Uploaded Image Background */}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8">
+      {/* Header Banner */}
       <PageHeader
         badge={seed.crop ? `${seed.crop} Hybrid Variety` : 'Certified Hybrid Seed'}
         badgeIcon={<Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />}
@@ -128,18 +179,16 @@ export default function SeedDetailsPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10">
         {/* Left Column: Image & Seller Info */}
         <div className="lg:col-span-5 space-y-6">
-          
           <div className="relative h-80 rounded-3xl overflow-hidden border border-slate-200 shadow-lg bg-slate-100">
-            <img 
-              src={seed.imageUrl} 
-              alt={seed.seedName} 
+            <img
+              src={seed.imageUrl}
+              alt={seed.seedName}
               className={`w-full h-full object-cover transition-all duration-500 ${
                 !user ? 'blur-lg scale-110 opacity-75' : ''
-              }`} 
+              }`}
             />
 
             {!user && (
@@ -158,7 +207,7 @@ export default function SeedDetailsPage() {
                 </Link>
               </div>
             )}
-            
+
             <div className="absolute top-4 left-4 z-10">
               {seed.stockStatus === 'AVAILABLE' && (
                 <span className="px-4 py-1.5 bg-emerald-500 text-white text-xs font-extrabold rounded-full shadow-md flex items-center gap-1.5">
@@ -194,11 +243,15 @@ export default function SeedDetailsPage() {
                 <Store className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase text-emerald-600 tracking-wider">Authorized Seed Seller</span>
+                <span className="text-[10px] font-bold uppercase text-emerald-600 tracking-wider">
+                  Authorized Seed Seller
+                </span>
                 {user ? (
                   <h3 className="text-lg font-bold text-slate-900">{seed.seller?.businessName}</h3>
                 ) : (
-                  <h3 className="text-lg font-bold text-slate-400 blur-sm select-none">Sri Lakshmi Seeds & Fertilisers</h3>
+                  <h3 className="text-lg font-bold text-slate-400 blur-sm select-none">
+                    Sri Lakshmi Seeds & Fertilisers
+                  </h3>
                 )}
               </div>
             </div>
@@ -206,7 +259,11 @@ export default function SeedDetailsPage() {
             <div className="space-y-2 text-xs text-slate-600 pt-2 border-t border-slate-100">
               <p className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
-                {user ? seed.seller?.address : <span className="blur-sm select-none">124 Agro Market Road, R.S. Puram, Coimbatore</span>}
+                {user ? (
+                  seed.seller?.address
+                ) : (
+                  <span className="blur-sm select-none">124 Agro Market Road, R.S. Puram, Coimbatore</span>
+                )}
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -214,7 +271,7 @@ export default function SeedDetailsPage() {
               </p>
               <p className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-emerald-600 shrink-0" />
-                Hours: {seed.seller?.openingHours}
+                Hours: {seed.seller?.openingHours || '8:00 AM - 8:00 PM'}
               </p>
               <p className="flex items-center gap-2">
                 <Tag className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -233,7 +290,7 @@ export default function SeedDetailsPage() {
                   </a>
 
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${seed.seller?.latitude},${seed.seller?.longitude}`}
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${seed.seller?.latitude || 11.0014},${seed.seller?.longitude || 76.9516}`}
                     target="_blank"
                     rel="noreferrer"
                     className="py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl text-center transition flex items-center justify-center gap-1.5"
@@ -251,23 +308,23 @@ export default function SeedDetailsPage() {
               )}
             </div>
           </div>
-
         </div>
 
         {/* Right Column: Seed Specs & Map */}
         <div className="lg:col-span-7 space-y-8">
-          
-          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
+          <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6">
             <div>
               <div className="flex items-center gap-2 text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">
                 <span>{seed.crop}</span> • <span>{seed.brand}</span> • <span>{seed.seedCode}</span>
               </div>
-              <h1 className="text-3xl font-extrabold text-slate-900">{seed.seedName}</h1>
-              <p className="text-sm text-slate-500 mt-1">Hybrid Name: <span className="font-semibold text-slate-800">{seed.hybridName}</span></p>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">{seed.seedName}</h1>
+              <p className="text-sm text-slate-500 mt-1">
+                Hybrid Name: <span className="font-semibold text-slate-800">{seed.hybridName}</span>
+              </p>
             </div>
 
             {/* Price & Quantity Grid */}
-            <div className="grid grid-cols-3 gap-4 bg-emerald-50/70 p-5 rounded-2xl border border-emerald-100">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-emerald-50/70 p-5 rounded-2xl border border-emerald-100">
               <div>
                 <span className="text-xs text-slate-500 font-medium block">Price per Unit</span>
                 {user ? (
@@ -275,13 +332,17 @@ export default function SeedDetailsPage() {
                 ) : (
                   <div className="flex items-center gap-1">
                     <span className="text-2xl font-extrabold text-slate-800 blur-sm select-none">₹420</span>
-                    <span className="text-[10px] font-bold text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded-md">🔒 Locked</span>
+                    <span className="text-[10px] font-bold text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded-md">
+                      🔒 Locked
+                    </span>
                   </div>
                 )}
               </div>
               <div>
                 <span className="text-xs text-slate-500 font-medium block">Current Stock</span>
-                <span className="text-2xl font-extrabold text-emerald-700">{seed.availableQuantity} {seed.unit}</span>
+                <span className="text-2xl font-extrabold text-emerald-700">
+                  {seed.availableQuantity} {seed.unit}
+                </span>
               </div>
               <div>
                 <span className="text-xs text-slate-500 font-medium block">Pack Size</span>
@@ -295,7 +356,38 @@ export default function SeedDetailsPage() {
               <p className="text-sm text-slate-600 leading-relaxed">{seed.description}</p>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 text-xs">
+            {/* Agronomic Technical Specifications Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
+                <span className="text-slate-400 font-bold uppercase text-[10px] flex items-center gap-1">
+                  <Sprout className="w-3 h-3 text-emerald-600" /> Germination
+                </span>
+                <p className="font-bold text-slate-800">{seed.germinationRate || '95% Min'}</p>
+              </div>
+
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
+                <span className="text-slate-400 font-bold uppercase text-[10px] flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600" /> Purity
+                </span>
+                <p className="font-bold text-slate-800">{seed.purityPercent || '98% Min'}</p>
+              </div>
+
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
+                <span className="text-slate-400 font-bold uppercase text-[10px] flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-emerald-600" /> Duration
+                </span>
+                <p className="font-bold text-slate-800">{seed.durationDays || '110-120 Days'}</p>
+              </div>
+
+              <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
+                <span className="text-slate-400 font-bold uppercase text-[10px] flex items-center gap-1">
+                  <Layers className="w-3 h-3 text-emerald-600" /> Season
+                </span>
+                <p className="font-bold text-slate-800 truncate">{seed.suitableSeason || 'Kharif & Rabi'}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1">
                 <span className="text-slate-400 font-bold uppercase text-[10px]">Suitable Season</span>
                 <p className="font-bold text-slate-800">{seed.suitableSeason}</p>
@@ -311,16 +403,61 @@ export default function SeedDetailsPage() {
           <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
             <div className="flex justify-between items-center">
               <h3 className="font-extrabold text-slate-900 text-base flex items-center gap-2">
-                📍 Seller Location & Distance ({seed.distanceKm} km away)
+                📍 Seller Location & Distance ({seed.distanceKm || 2.4} km away)
               </h3>
             </div>
             <MapView farmerLat={11.0168} farmerLng={76.9558} centers={sellerCenters} />
           </div>
 
+          {/* Related / Similar Seed Recommendations */}
+          {relatedSeeds.length > 0 && (
+            <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-base font-extrabold text-slate-900 flex items-center gap-2">
+                    🌾 Similar Certified {seed.crop} Hybrid Varieties
+                  </h3>
+                  <p className="text-xs text-slate-500">Other available stocks from verified sellers nearby</p>
+                </div>
+                <Link href="/seeds" className="text-xs font-bold text-emerald-600 hover:underline">
+                  View All Seeds →
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                {relatedSeeds.map(item => (
+                  <Link
+                    key={item._id}
+                    href={`/seeds/${item._id}`}
+                    className="p-3 bg-slate-50 hover:bg-emerald-50/60 rounded-2xl border border-slate-200/80 transition group flex flex-col justify-between"
+                  >
+                    <div className="space-y-2">
+                      <div className="h-28 rounded-xl overflow-hidden bg-slate-200">
+                        <img
+                          src={item.imageUrl}
+                          alt={item.seedName}
+                          className="w-full h-full object-cover group-hover:scale-105 transition"
+                        />
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
+                        {item.crop}
+                      </span>
+                      <h4 className="text-xs font-bold text-slate-800 line-clamp-1">{item.seedName}</h4>
+                    </div>
+
+                    <div className="pt-2 mt-2 border-t border-slate-200/60 flex items-center justify-between text-xs">
+                      <span className="font-extrabold text-slate-900">₹{item.sellingPrice}</span>
+                      <span className="text-[11px] font-semibold text-emerald-600">
+                        {item.availableQuantity} {item.unit}
+                      </span>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-
       </div>
-
     </div>
   );
 }
